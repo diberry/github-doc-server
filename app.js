@@ -47,17 +47,20 @@ app.get('/status', function (req, res) {
   const newDate = new Date()
 
   if (!req.session.complex){
-    req.session["complex"]={
+    const newSessionValue = {
       a: "blue",
       b: {
         view: 0,
         d: newDate}};
+
+    session.set(req, "complex", newSessionValue);
   } else {
-    req.session.complex.b.view++;
 
-    req.session.complex.a = req.session.complex.a==="blue"  ? "red" :"blue";
-
-    req.session.complex.b.d = newDate;
+    let complex = session.get(req,"complex")
+    complex.b.view++;
+    complex.a = complex.a==="blue"  ? "red" :"blue";complex.b.d = newDate;
+    
+    session.set(req, "complex", complex);
   }
 
   res.send(`${JSON.stringify(req.session)}`);
