@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+
 const cors = require('cors')
 
 // Config
@@ -30,12 +31,12 @@ const session = require(`./lib/session.js`)
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({
   credentials: true,
   origin: `http://localhost:${GLOBALCONFIG.UI_PORT}`
 }))
 app.use(session.createSessionMiddleWare(GLOBALCONFIG.SESSION_SETTINGS))
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(loggingMiddleware)
 
 // routes
@@ -104,7 +105,7 @@ app.get('/session', (req,res,next)=> {
 app.use('/secure', gitHubRouter.isAuthenticated, (req, res, next) =>{
   res.redirect('/session');
 })
-app.use('/note', gitHubRouter.isAuthenticated, noteRouter);
+app.use('/note', noteRouter);
 app.use('/session-authenticated',gitHubRouter.isAuthenticated, (req,res,next)=> {
   if(req.session.views){
     req.session.views++
