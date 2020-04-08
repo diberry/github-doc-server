@@ -11,6 +11,8 @@ router.get('/', function (req, res, next) {
 
     const filePath =path.join(__dirname,'../public/note.html');
     res.sendFile(filePath)
+    //res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With,Content-Type, Accept");
+
 });
 
 router.post('/', async (req, res, next) => {
@@ -18,11 +20,13 @@ router.post('/', async (req, res, next) => {
     const CONFIG = req.app.locals;
     console.log('/note [POST] called')
 
-    if (req.body) {
+    if (req.body && req.body.filecontents && req.body.filecontents.length>0) {
 
-        const fileContents = await repo.readFile(session.get(req, "gitHubUserAccessToken"))
+        const filecontents = req.body.filecontents
 
-        res.send(`note received - req.body - ${JSON.stringify(fileContents)}`);
+        //const fileContents = await repo.readFile(session.get(req, "gitHubUserAccessToken"))
+
+        res.send(req.body.filecontents)
     }
 });
 
