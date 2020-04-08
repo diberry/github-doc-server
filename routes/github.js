@@ -39,16 +39,19 @@ router.get('/callback', async (req, res) => {
         console.log(userProfile)
 
         const user = { ...userProfile, gitHubToken}
-        await req.session.set(req, "user", user);
-        await req.session.set(req, "token", gitHubToken);
-        req.session["dog"]++
-        res.redirect("/session-authenticated")
-        res.end()
+        session.set(req, "user", user);
+
+        req.session.save(function(err) {
+            if(err) {
+              res.end('session save error: ' + err)
+              return
+            }
+            res.redirect('/session-authenticated')
+          })
 
     } else {
         console.log("/github/callback - code is empty ")
         res.send('/github/callback - code is empty ')
-        res.end
     }
 })
 

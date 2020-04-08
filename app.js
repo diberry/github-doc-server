@@ -59,7 +59,7 @@ app.get('/status', function (req, res) {
     let complex = session.get(req,"complex")
     complex.b.view++;
     complex.a = complex.a==="blue"  ? "red" :"blue";complex.b.d = newDate;
-    
+
     session.set(req, "complex", complex);
   }
 
@@ -99,6 +99,7 @@ app.get('/session', (req,res,next)=> {
     res.end('views = 1 - refresh page' + JSON.stringify(req.session))
   }
 });
+
 
 app.use('/secure', gitHubRouter.isAuthenticated, (req, res, next) =>{
   res.redirect('/session');
