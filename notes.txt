@@ -88,3 +88,13 @@ npm config set proxy http://<username>:<password>@<proxy-server-url>:<port>
 
 https_proxy = http://127.0.0.1:8888
 http_proxy = http://127.0.0.1:8888
+
+<client>;ssl3;tls1.0
+
+ssl2;ssl3;tls1.0;tls1.1;
+
+
+error response from github when request passed through fiddler
+{"message":"Request failed with status code 502","name":"Error","stack":"Error: Request failed with status code 502\n    at createError (c:\\Users\\diberry\\repos\\dina\\playgrounds\\full-stack-playground\\react-auth-github-funador\\dina-react-auth\\combined-simple-2\\api\\node_modules\\axios\\lib\\core\\createError.js:16:15)\n    at settle (c:\\Users\\diberry\\repos\\dina\\playgrounds\\full-stack-playground\\react-auth-github-funador\\dina-react-auth\\combined-simple-2\\api\\node_modules\\axios\\lib\\core\\settle.js:17:12)\n    at IncomingMessage.handleStreamEnd (c:\\Users\\diberry\\repos\\dina\\playgrounds\\full-stack-playground\\react-auth-github-funador\\dina-react-auth\\combined-simple-2\\api\\node_modules\\axios\\lib\\adapters\\http.js:236:11)\n    at IncomingMessage.emit (events.js:194:15)\n    at endReadableNT (_stream_readable.js:1125:12)\n    at process._tickCallback (internal/process/next_tick.js:63:19)","config":{"url":"https://api.github.com/repos/diberry/public-test/contents/curl-test-1586634665507.txt","method":"put","data":"{\"message\":\"my commit message\",\"committer\":{\"name\":\"Dina Berry\",\"email\":\"diberry@microsoft.com\"},\"content\":\"aGVsbG8gd29ybGQ=\"}","headers":{"Accept":"*/*","Content-Type":"application/json","Authorization":"token 5ed6d185ff13d9ac1ff6238427e7665a8c37c7f1","User-Agent":"curl/7.69.1","Host":"api.github.com","Cookie":"_octo=GH1.1.1279080220.1583979436; logged_in=no","Content-Length":126,"host":"api.github.com"},"proxy":{"host":"127.0.0.1","port":"8888"},"transformRequest":[null],"transformResponse":[null],"timeout":0,"xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN","maxContentLength":-1}}"
+
+[Fiddler] The connection to 'api.github.com' failed.  <br />System.Security.SecurityException Failed to negotiate HTTPS connection with server.fiddler.network.https&gt; HTTPS handshake to api.github.com (for #45) failed. System.Security.Authentication.AuthenticationException A call to SSPI failed, see inner exception. &lt; The message received was unexpected or badly formatted\n\nWin32 (SChannel) Native Error Code: 0x80090326

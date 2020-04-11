@@ -1,0 +1,11 @@
+PUT https://api.github.com/repos/diberry/public-test/contents/curl-test-1586623602471.txt HTTP/1.1
+Accept: */*
+Content-Type: application/json
+Authorization: token 385680059e06f17942bcc8b7aae1b2bec1cf6ed6
+User-Agent: curl/7.69.1
+host: api.github.com
+Cookie: _octo=GH1.1.1279080220.1583979436; logged_in=no
+Content-Length: 126
+Connection: close
+
+{"message":"my commit message","committer":{"name":"Dina Berry","email":"diberry@microsoft.com"},"content":"aGVsbG8gd29ybGQ="}

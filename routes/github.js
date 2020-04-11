@@ -64,7 +64,7 @@ router.get('/filewrite', async (req, res) => {
     const user = session.get(req,"user");
     const token = user.gitHubToken;
 
-    const writeFileResults = await file.writeFile(token, user.login, {}, {},  CONFIG.environment )
+    const writeFileResults = await file.writeFile2(token, user.login, {}, {},  CONFIG.environment )
 
     res.send(JSON.stringify(writeFileResults.content))
 
