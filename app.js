@@ -8,16 +8,11 @@ const cors = require('cors')
 // Config
 const GLOBALCONFIG = require('./config.js')
 console.log(JSON.stringify(GLOBALCONFIG));
-
-// cookies and session
-
-
-
-// My route providers
-var noteRouter = require('./routes/note');
-var gitHubRouter = require('./routes/github');
-const loggingMiddleware = require('./lib/log-route')
-
+const loggingMiddleware = require('./routes/log-route');
+const gitHubRouter = require('./routes/github');
+const authenticationRouter = require('./routes/authCallback')
+const isAuthenticated = require('./routes/isAuthenticated')
+const user = require('./routes/user')
 
 // app config
 var app = express();
@@ -40,9 +35,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(loggingMiddleware)
 
 // routes
-app.use('/github', gitHubRouter.router);
+app.use('/callback', authenticationRouter)
 
-app.get('/status', function (req, res) {
+app.use('/secure', isAuthenticated,  (req, res, next) =>{
+  res.redirect('/session');
+})
+app.use('/github', isAuthenticated, gitHubRouter);
+app.use('/user', isAuthenticated, user);
+
+
+app.get('/status', (req, res) => {
 
   console.log(JSON.stringify(req.session));
   const newDate = new Date()
@@ -67,25 +69,18 @@ app.get('/status', function (req, res) {
   res.send(`${JSON.stringify(req.session)}`);
 
 });
-
-
-app.get('/status2', function (req, res) {
+app.get('/status2', (req, res) => {
 
 
   console.log(JSON.stringify(req.session));
   res.send(`${JSON.stringify(req.session)}`);
   res.end;
 });
-
-app.use('/github', gitHubRouter.router);
-
-
 app.get('/login', (req, res, next) => {
   const CONFIG = req.app.locals;
   console.log('login called')
-  res.redirect(`https://github.com/login/oauth/authorize?client_id=${CONFIG.GITHUB_CLIENT_ID}`);
+  res.redirect(`https://github.com/login/oauth/authorize?client_id=${CONFIG.GITHUB_CLIENT_ID}&scope=user%20repo`);
 })
-
 app.get('/session', (req,res,next)=> {
   if(req.session.views){
     req.session.views++
@@ -98,26 +93,6 @@ app.get('/session', (req,res,next)=> {
   } else {
     req.session.views = 1
     res.end('views = 1 - refresh page' + JSON.stringify(req.session))
-  }
-});
-
-
-app.use('/secure', gitHubRouter.isAuthenticated, (req, res, next) =>{
-  res.redirect('/session');
-})
-app.use('/note', noteRouter);
-app.use('/session-authenticated',gitHubRouter.isAuthenticated, (req,res,next)=> {
-  if(req.session.views){
-    req.session.views++
-    res.setHeader('Content-Type', 'text/html')
-    res.write('Views ' + req.sessions.views + "<br>")
-    res.write('Expires in ' + (req.session.cookie.maxAge / 1000 )  + + "<br>")
-    res.write(JSON.stringify(req.session))
-    res.end()
-
-  } else {
-    req.session.views = 1
-    res.end('views = 1 - refresh page')
   }
 });
 

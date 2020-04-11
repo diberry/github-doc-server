@@ -1,0 +1,2 @@
+#	Result	Protocol	Host	URL	Body	Caching	Content-Type	Process	Comments	Custom
+30	201	HTTPS	api.github.com	/repos/diberry/public-test/contents/curl-test-4.txt	2,241	private, max-age=60, s-maxage=60	application/json; charset=utf-8	curl:12444

@@ -1,0 +1,32 @@
+{
+    "protocol": "https:",
+    "slashes": true,
+    "auth": null,
+    "host": "api.github.com",
+    "port": null,
+    "hostname": "api.github.com",
+    "hash": null,
+    "search": null,
+    "query": null,
+    "pathname": "/repos/diberry/public-test/contents/README.md",
+    "path": "/repos/diberry/public-test/contents/README.md",
+    "href": "https://api.github.com/repos/diberry/public-test/contents/README.md",
+    "method": "GET",
+    "headers": {
+        "accept": [
+            "application/vnd.github.v3+json"
+        ],
+        "user-agent": [
+            "octokit-rest.js/17.2.0 octokit-core.js/2.4.3 Node.js/10.15.3 (Windows 10; x64)"
+        ],
+        "authorization": [
+            "token 64879d38df78bdc73d0942ce1f849db0a795e9dd"
+        ],
+        "Accept-Encoding": [
+            "gzip,deflate"
+        ],
+        "Connection": [
+            "close"
+        ]
+    }
+}

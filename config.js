@@ -13,5 +13,6 @@ module.exports = {
         FILE_SESSION: {
             PATH:path.join(__dirname, "sessions")
         }
-    }
+    },
+    ENVIRONMENT: process.env.ENVIRONMENT || 'production'
 }
