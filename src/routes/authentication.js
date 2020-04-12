@@ -2,14 +2,8 @@ var express = require('express');
 var router = express.Router();
 const gitHubAuthentication = require('../lib/github/githubAuth.js')
 const userUtils = require('../lib/github/user.js')
-const path = require('path')
 const session = require('../lib/session.js')
-const repo = require('../lib/github/repo')
-const file = require('../lib/github/file')
-router.use(function timeLog (req, res, next) {
-  console.log('authCallback route - Time: ', Date.now())
-  next()
-})
+
 router.get('/', async (req, res) => {
 
     const CONFIG = req.app.locals;
@@ -45,4 +39,22 @@ router.get('/', async (req, res) => {
     }
   })
 
-  module.exports = router
+
+
+  const isAuthenticated = (req, res, next) => {
+
+    const user = session.get(req, "user")
+    if (req &&
+        req.session &&
+        req.session.user &&
+        req.session.user.gitHubToken &&
+        req.session.user.gitHubToken.length > 0)
+        return next();
+
+        res.redirect('/login');
+}
+
+module.exports = {
+  router,
+  isAuthenticated
+}

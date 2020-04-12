@@ -6,7 +6,6 @@ const path = require('path')
 const session = require('../lib/session.js')
 const repo = require('../lib/github/repo')
 const file = require('../lib/github/file')
-const objects = require('../lib/objects')
 
 router.use(function timeLog (req, res, next) {
     console.log('Github route - Time: ', Date.now())
@@ -34,10 +33,11 @@ router.get('/readme', async (req, res) => {
 
     const user = session.get(req,"user");
     const token = user.gitHubToken;
+
     const repoInfo = {
-        name:"private-test",
-        owner: "diberry",
-        branch: "master"
+        repo: req.query.repo,
+        owner: req.query["repo-owner"],
+        path: "README.md"
     }
 
     const readmeForRepo = await file.readme(token, user.login,repoInfo)
@@ -53,22 +53,17 @@ router.get('/file', async (req, res) => {
     const user = session.get(req,"user");
     const token = user.gitHubToken;
 
-    const userReposForRole = await file.readFile(token, user.login, {}, {} )
+    const repoInfo = {
+        repo: req.query.repo || req.form.repo,
+        owner: req.query["repo-owner"]  || req.form["repo-owner"],
+        path: req.query.path  || req.form.path
+    }
 
-    res.send(JSON.stringify(readmeForRepo.content))
+    const results = await file.readFile(token, user.login, repoInfo )
+
+    res.send(JSON.stringify(results.content))
 
 })
-router.get('/repos', async (req, res, next) => {
-
-    const CONFIG = req.app.locals;
-    console.log('/github/repos [GET] called')
-
-    const token = user.gitHubToken;
-
-    const fileContents = await repo.getRepoListByUserRole(token, user.login,"owner")
-
-    res.send(JSON.stringify(filecontents))
-});
 router.get('/note', function (req, res, next) {
 
     const CONFIG = req.app.locals;
@@ -76,12 +71,10 @@ router.get('/note', function (req, res, next) {
 
     const filePath =path.join(__dirname,'../public/note.html');
     res.sendFile(filePath)
-    //res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With,Content-Type, Accept");
 
 });
 
-
-router.post('/repo/commit', async (req, res, next) => {
+router.post('/note', async (req, res, next) => {
 
     const CONFIG = req.app.locals;
     console.log('/github/note [POST] called')
@@ -89,12 +82,6 @@ router.post('/repo/commit', async (req, res, next) => {
     const form = req.body;
 
     console.log(JSON.stringify(form))
-
-    const jsonToArray = objects.jsonToArray(form);
-
-    const valid = jsonToArray.filter(item => {
-        return (!(item.length >0))
-    })
 
     const user = session.get(req,"user") || "diberry";
 

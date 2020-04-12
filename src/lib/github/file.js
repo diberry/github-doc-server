@@ -8,17 +8,14 @@ const readme = async (token, user, repoInfo) => {
 
   if (!token || !user || !repoInfo) return;
 
-  const request = http.getAuthenticatedHttp(token);
-
   const octokit = new Octokit.Octokit({
     auth: token
   });
 
-
   const config = {
-    owner: "diberry",
-    repo: "public-test",
-    path: "README.md"
+    owner: repoInfo.owner,
+    repo: repoInfo.repo,
+    path: repoInfo.path
   }
   const contents = await octokit.repos.getContents(config);
 
@@ -27,29 +24,19 @@ const readme = async (token, user, repoInfo) => {
 
 const readFile = async (token, user, repoInfo, fileInfo) => {
 
-  if (!token || !user || !fileInfo || !repoInfo) return;
+  if (!token || !user || !repoInfo) return;
+
   const octokit = new Octokit.Octokit({
     auth: token
   });
-  const id = Number(new Date()).toString()
 
   const config = {
-    owner: "diberry",
-    repo: "public-test",
-    path: `README-${id}.md`,
-    message: `commit message ${id}`,
-    content: `content ${id}`,
-    committer: {
-      name: `Dina Berry`,
-      email: `diberry@microsoft.com`
-    },
-    author: {
-      name: `Dina Berry`,
-      email: `diberry@microsoft.com`
-    }
+    owner: repoInfo.owner,
+    repo: repoInfo.repo,
+    path: repoInfo.path
   }
+  const contents = await octokit.repos.getContents(config);
 
-  const contents = await octokit.repos.createOrUpdateFFile(config);
   return (contents && contents.data) ? contents.data : null;
 
 }
@@ -88,7 +75,6 @@ const writeFile = async (token,  repoInfo, fileInfo) => {
 
 module.exports = {
   writeFile,
-  writeFile2,
   readFile,
   readme
 };

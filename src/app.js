@@ -2,17 +2,15 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
 const cors = require('cors')
 
 // Config
-const GLOBALCONFIG = require('../config.js')
-console.log(JSON.stringify(GLOBALCONFIG));
-const loggingMiddleware = require('./routes/log-route');
-const gitHubRouter = require('./routes/github');
-const authenticationRouter = require('./routes/authCallback')
-const isAuthenticated = require('./routes/isAuthenticated')
+const GLOBALCONFIG = require('../src/config.js')
+
+const preroute = require('./routes/preroute');
 const user = require('./routes/user')
+const authenticationRouter = require('./routes/authentication')
+const gitHubRouter = require('./routes/github');
 
 // app config
 var app = express();
@@ -21,7 +19,7 @@ app.use(logger('dev'));
 
 // cookies and sessions
 app.use(cookieParser());
-const session = require(`./lib/session.js`)
+const session = require(`../src/lib/session.js`)
 
 
 app.use(express.json());
@@ -31,8 +29,8 @@ app.use(cors({
   origin: `http://localhost:${GLOBALCONFIG.UI_PORT}`
 }))
 app.use(session.createSessionMiddleWare(GLOBALCONFIG.SESSION_SETTINGS))
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(loggingMiddleware)
+app.use(express.static(path.join(__dirname, './public')));
+app.use(preroute)
 
 // public routes
 app.get('/status', (req, res) => {
@@ -43,10 +41,10 @@ app.get('/login', (req, res, next) => {
   console.log('login called')
   res.redirect(`https://github.com/login/oauth/authorize?client_id=${CONFIG.GITHUB_CLIENT_ID}&scope=user%20repo`);
 })
-app.use('/callback', authenticationRouter)
+app.use('/callback', authenticationRouter.router)
 
 // authenticated routes
-app.use('/github', isAuthenticated, gitHubRouter);
-app.use('/user', isAuthenticated, user);
+app.use('/github', authenticationRouter.isAuthenticated, gitHubRouter);
+app.use('/user', authenticationRouter.isAuthenticated, user);
 
 module.exports = app;

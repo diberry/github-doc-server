@@ -3,8 +3,8 @@
 /**
  * Module dependencies.
  */
-const CONFIG = require('../config.js')
-var app = require('../app');
+const CONFIG = require('../src/config.js')
+var app = require('../src/app');
 var debug = require('debug')('api:server');
 var http = require('http');
 
