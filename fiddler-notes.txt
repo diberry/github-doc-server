@@ -1,4 +1,0 @@
-fiddler listens on 8888
-curl sends through proxy  curl -x 127.0.0.1:8888
-postman sends through proxy
-axios sends through proxy 
