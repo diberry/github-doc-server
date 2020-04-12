@@ -1,4 +1,14 @@
-{
-  "message": "Not Found",
-  "documentation_url": "https://developer.github.com/v3/repos/contents/#get-contents"
-}
+# GitHub oauth app
+
+## Features
+
+* GitHub oauth
+* GitHub login
+* Create text file via commit in public or private repo
+
+### Commit form
+
+* static html
+* trim text fields
+* TBD:
+    * error handling
