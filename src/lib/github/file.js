@@ -54,48 +54,7 @@ const readFile = async (token, user, repoInfo, fileInfo) => {
 
 }
 
-const writeFile = async (token, user, repoInfo, fileInfo, environment) => {
-
-  try {
-    const request = http.getAuthenticatedHttp(token, environment)
-
-    const id = Number(new Date()).toString()
-    const owner = "diberry"
-    const repo = "public-test"
-    const path = `README-${id}.txt`
-    const base64Content = Base64.encode(`${new Date()} - content ${id}`);
-    const uri = `diberry/public-test/contents/curl-test-${id}.txt`;
-
-    const fullUri = `https://api.github.com/repos/diberry/public-test/contents/curl-test-${id}.txt`
-
-    const data = {
-      "message": "my commit message",
-      "committer": {
-        "name": "Dina Berry",
-        "email": "diberry@microsoft.com"
-      },
-      "content": base64Content
-    }
-
-    const config = {
-      headers: {
-        'Authorization': 'token ' + token,
-        'Accept': '*/*',
-        'User-Agent': 'curl/7.69.1',
-        'Content-Type': 'application/json'
-      }
-    }
-
-    console.log(id)
-
-    const contents = await axios.put(fullUri, data, config)
-    return (contents && contents.data) ? contents.data : null;
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-const writeFile2 = async (token,  repoInfo, fileInfo) => {
+const writeFile = async (token,  repoInfo, fileInfo) => {
 
   try {
     const request = http.getAuthenticatedHttp(token, null)

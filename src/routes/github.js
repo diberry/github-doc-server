@@ -6,6 +6,7 @@ const path = require('path')
 const session = require('../lib/session.js')
 const repo = require('../lib/github/repo')
 const file = require('../lib/github/file')
+const objects = require('../lib/objects')
 
 router.use(function timeLog (req, res, next) {
     console.log('Github route - Time: ', Date.now())
@@ -57,18 +58,6 @@ router.get('/file', async (req, res) => {
     res.send(JSON.stringify(readmeForRepo.content))
 
 })
-router.get('/filewrite', async (req, res) => {
-    const CONFIG = req.app.locals;
-    console.log('/github/file [GET] called')
-
-    const user = session.get(req,"user");
-    const token = user.gitHubToken;
-
-    const writeFileResults = await file.writeFile2(token, user.login, {}, {},  CONFIG.environment )
-
-    res.send(JSON.stringify(writeFileResults.content))
-
-})
 router.get('/repos', async (req, res, next) => {
 
     const CONFIG = req.app.locals;
@@ -92,12 +81,21 @@ router.get('/note', function (req, res, next) {
 });
 
 
-router.post('/note', async (req, res, next) => {
+router.post('/repo/commit', async (req, res, next) => {
 
     const CONFIG = req.app.locals;
     console.log('/github/note [POST] called')
 
     const form = req.body;
+
+    console.log(JSON.stringify(form))
+
+    const jsonToArray = objects.jsonToArray(form);
+
+    const valid = jsonToArray.filter(item => {
+        return (!(item.length >0))
+    })
+
     const user = session.get(req,"user") || "diberry";
 
     const repoInfo = {
@@ -105,8 +103,6 @@ router.post('/note', async (req, res, next) => {
         repo: form.reponame.trim(),
         path: form.filename.trim()
     };
-
-
 
     const fileInfo = {
         content: form.filecontent.trim(),
@@ -117,7 +113,7 @@ router.post('/note', async (req, res, next) => {
 
     const token = user.gitHubToken;
 
-    const fileContents = await file.writeFile2(token, repoInfo, fileInfo)
+    const fileContents = await file.writeFile(token, repoInfo, fileInfo)
 
     res.send(JSON.stringify(fileContents))
 
@@ -125,10 +121,7 @@ router.post('/note', async (req, res, next) => {
 
 router.get('/token', async (req, res, next) => {
 
-    const CONFIG = req.app.locals;
-    console.log('/github/token [POST] called')
-
-    res.send(session.get(req,"user").gitHubToken)
+    res.send(req.session.user.gitHubToken)
 
 });
 
