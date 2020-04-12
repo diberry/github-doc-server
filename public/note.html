@@ -7,10 +7,22 @@
 
 <body>
   <h1>Add note</h1>
-  <p><form method="post" url="/note">
-    <input type="text" name="filecontents">
-    <input type="submit">
-  </form></p>
+  <p>
+    <form method="post" url="/note">
+      <b>File info</b><br>
+      <input type="text" name="committername" value="Dina Berry">Committer Name<br>
+      <input type="text" name="committeremail" value="diberry@microsoft.com">CommitterEmail<br>
+      <input type="text" name="filename" value="README-10.txt">commitMessage<br>
+      <input type="text" name="commitMessage" value="README-10.txt">File name and path<br>
+
+      <br>
+      <b>Repo info</b><br>
+      <input type="text" name="repoowner" value="diberry">Repo owner<br>
+      <input type="text" name="reponame" value="public-test">Repo name<br>
+      <input type="text" name="filecontent" value="README-10.txt">File contents<br>
+      <input type="submit">
+    </form>
+  </p>
 </body>
 
 </html>

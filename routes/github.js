@@ -97,11 +97,27 @@ router.post('/note', async (req, res, next) => {
     const CONFIG = req.app.locals;
     console.log('/github/note [POST] called')
 
-    const filecontents = req.body.filecontents || "hello world";
+    const form = req.body;
     const user = session.get(req,"user") || "diberry";
+
+    const repoInfo = {
+        owner: form.repoowner.trim(),
+        repo: form.reponame.trim(),
+        path: form.filename.trim()
+    };
+
+
+
+    const fileInfo = {
+        content: form.filecontent.trim(),
+        commitMessage: form.commitMessage.trim(),
+        committerName:form.committername.trim(),
+        committerEmail:form.committeremail.trim()
+    }
+
     const token = user.gitHubToken;
 
-    const fileContents = await file.writeFile(token, user,{}, {})
+    const fileContents = await file.writeFile2(token, repoInfo, fileInfo)
 
     res.send(JSON.stringify(fileContents))
 
