@@ -8,7 +8,7 @@ const appInsights = require("applicationinsights");
 const GLOBALCONFIG = require('../src/config.js')
 
 const session = require(`../src/lib/session.js`)
-const preroute = require('./routes/preroute');
+const metaroute = require('./routes/preroute');
 const user = require('./routes/user')
 const authenticationRouter = require('./routes/authentication')
 const gitHubRouter = require('./routes/github');
@@ -33,9 +33,12 @@ app.use(cors({
 app.use(session.createSessionMiddleWare(GLOBALCONFIG.SESSION_SETTINGS))
 
 app.use(express.static(path.join(__dirname, './public')));
-app.use(preroute)
+app.use(metaroute.preroute)
 
 // public routes
+app.get('/error',(req, res) =>{
+  throw new Error('false error');
+})
 app.get('/status', (req, res) => {
   res.send(JSON.stringify(req.session));
 });
@@ -50,4 +53,5 @@ app.use('/callback', authenticationRouter.router)
 app.use('/github', authenticationRouter.isAuthenticated, gitHubRouter);
 app.use('/user', authenticationRouter.isAuthenticated, user);
 
+app.use(metaroute.errorHandling)
 module.exports = app;
