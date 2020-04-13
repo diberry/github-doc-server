@@ -3,6 +3,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors')
+const appInsights = require("applicationinsights");
 
 // Config
 const GLOBALCONFIG = require('../src/config.js')
@@ -16,11 +17,12 @@ const gitHubRouter = require('./routes/github');
 var app = express();
 app.locals = GLOBALCONFIG;
 app.use(logger('dev'));
+const appInsightsClient = appInsights.defaultClient;
+app.locals.appInsightsClient = appInsightsClient;
 
 // cookies and sessions
 app.use(cookieParser());
 const session = require(`../src/lib/session.js`)
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -29,6 +31,8 @@ app.use(cors({
   origin: `http://localhost:${GLOBALCONFIG.UI_PORT}`
 }))
 app.use(session.createSessionMiddleWare(GLOBALCONFIG.SESSION_SETTINGS))
+
+
 app.use(express.static(path.join(__dirname, './public')));
 app.use(preroute)
 

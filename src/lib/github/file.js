@@ -37,6 +37,8 @@ const readFile = async (token, user, repoInfo, fileInfo) => {
   }
   const contents = await octokit.repos.getContents(config);
 
+  console.log(JSON.stringify(contents))
+
   return (contents && contents.data) ? contents.data : null;
 
 }

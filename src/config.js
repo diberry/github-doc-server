@@ -14,5 +14,8 @@ module.exports = {
             PATH:path.join(__dirname, "sessions")
         }
     },
-    ENVIRONMENT: process.env.ENVIRONMENT || 'production'
+    ENVIRONMENT: process.env.ENVIRONMENT || 'production',
+    AZURE:{
+        APPLICATION_INSIGHTS_INSTRUMENTATION_KEY: process.env.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY
+    }
 }
