@@ -11,6 +11,5 @@ module.exports.getRepoListByUserRole = async (token,user,role) => {
         url: `/users/${user}/repos?type=${role}`
       });
 
-  console.log(response.data)
   return response.data;
 }

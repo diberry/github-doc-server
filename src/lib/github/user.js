@@ -1,5 +1,4 @@
 const http  = require('../http.js');
-//const axios = require('axios')
 
 module.exports.getProfile = async (token) => {
 
@@ -12,6 +11,5 @@ module.exports.getProfile = async (token) => {
         url: '/user'
       });
 
-      console.log(userProfileResponse.data)
       return userProfileResponse.data;
 }

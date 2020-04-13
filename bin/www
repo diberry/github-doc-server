@@ -8,7 +8,7 @@
 
 
 
-// remove telemetry
+// telemetry
 const CONFIG = require('../src/config.js')
 if(CONFIG.AZURE.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY){
   appInsights.setup(CONFIG.AZURE.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY)

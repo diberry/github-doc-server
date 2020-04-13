@@ -1,6 +1,8 @@
 const axios = require('axios')
 
-module.exports.getAuthenticatedHttp = (token, environment) => {
+module.exports.getAuthenticatedHttp = (token) => {
+
+  if(!token) return;
 
     let config = {
       baseURL: 'https://api.github.com/',

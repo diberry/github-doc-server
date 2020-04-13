@@ -1,12 +1,11 @@
 const http = require('../http.js');
-const axios = require('axios')
 const Octokit = require("@octokit/rest");
 const Base64 = require('js-base64').Base64;
 
 
 const readme = async (token, user, repoInfo) => {
 
-  if (!token || !user || !repoInfo) return;
+  if (!token || !user || !repoInfo || !repoInfo.owner || !repoInfo.repo || !repoInfo.path) return;
 
   const octokit = new Octokit.Octokit({
     auth: token
@@ -22,9 +21,9 @@ const readme = async (token, user, repoInfo) => {
   return (contents && contents.data) ? contents.data : null;
 }
 
-const readFile = async (token, user, repoInfo, fileInfo) => {
+const readFile = async (token, user, repoInfo) => {
 
-  if (!token || !user || !repoInfo) return;
+  if (!token || !user || !repoInfo || !repoInfo.owner || !repoInfo.repo || !repoInfo.path) return;
 
   const octokit = new Octokit.Octokit({
     auth: token
@@ -36,8 +35,6 @@ const readFile = async (token, user, repoInfo, fileInfo) => {
     path: repoInfo.path
   }
   const contents = await octokit.repos.getContents(config);
-
-  console.log(JSON.stringify(contents))
 
   return (contents && contents.data) ? contents.data : null;
 
@@ -45,14 +42,11 @@ const readFile = async (token, user, repoInfo, fileInfo) => {
 
 const writeFile = async (token,  repoInfo, fileInfo) => {
 
-  try {
     const request = http.getAuthenticatedHttp(token, null)
 
     const base64Content = Base64.encode(fileInfo.content);
 
-    const restURI = "repos";
-
-    const uri = `${restURI}/${repoInfo.owner}/${repoInfo.repo}/contents/${repoInfo.path}`;
+    const uri = `repos/${repoInfo.owner}/${repoInfo.repo}/contents/${repoInfo.path}`;
 
     const data = {
       "message": "commmit message " + fileInfo.commitMessage,
@@ -64,15 +58,13 @@ const writeFile = async (token,  repoInfo, fileInfo) => {
     }
 
     const contents = await request({
-      method: 'put',
+      method: 'PUT',
       url: uri,
       data
     });
 
     return (contents && contents.data) ? contents.data : null;
-  } catch (err) {
-    console.log(err)
-  }
+
 }
 
 module.exports = {

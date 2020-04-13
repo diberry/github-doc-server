@@ -20,5 +20,4 @@ module.exports.get = (req, key) =>{
 module.exports.set = (req, key, value) =>{
   if(!req || !key || !value) return;
   req.session[key] = value;
-  //req.session.save();
 }

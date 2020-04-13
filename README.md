@@ -1,5 +1,10 @@
 # GitHub oauth app
 
+## Roadmap
+
+* React front-end
+* Sessions in database
+
 ## Features
 
 * GitHub oauth
@@ -12,3 +17,7 @@
 * trim text fields
 * TBD:
     * error handling
+
+### Logging
+
+* Azure Application Insights
