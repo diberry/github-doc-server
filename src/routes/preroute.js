@@ -6,14 +6,14 @@ const preroute = (req, res, next) => {
     }
 
     req.session.log = true;
-    console.log(`preroute - ${req.session.id} - [${req.path}] - ${JSON.stringify(req.session)}`)
+    req.app.locals.log.trace(req.app.locals.appInsightsClient, `preroute - ${req.session.id} - [${req.path}] - ${JSON.stringify(req.session)}`, req.app.locals.ENVIRONMENT)
 
     next()
 }
 
 const errorHandling  =  ((err, req, res, next) => {
 
-    console.log(`ErrorHandling ${err}`)
+  req.app.locals.log.error(req.app.locals.appInsightsClient, `postroute error - ${err}`, req.app.locals.ENVIRONMENT)
 
     if (res.headersSent) {
       return next(err)

@@ -2,6 +2,8 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const cors = require('cors')
+const log = require('../src/lib/log')
+
 const appInsights = require("applicationinsights");
 
 // Config
@@ -20,6 +22,7 @@ app.locals = GLOBALCONFIG;
 // remote logging
 const appInsightsClient = appInsights.defaultClient;
 app.locals.appInsightsClient = appInsightsClient;
+app.locals.log = log;
 
 // cookies and sessions
 app.use(cookieParser());
@@ -37,6 +40,7 @@ app.use(metaroute.preroute)
 
 // public routes
 app.get('/error',(req, res) =>{
+  req.app.locals.log.trace(req.app.locals.appInsightsClient, "app insights key is found", req.app.locals.ENVIRONMENT)
   throw new Error('false error');
 })
 app.get('/status', (req, res) => {

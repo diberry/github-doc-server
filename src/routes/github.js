@@ -37,7 +37,7 @@ router.get('/readme', async (req, res) => {
     if(readmeForRepo && readmeForRepo.content) {
         res.send(JSON.stringify(readmeForRepo.content))
     } else {
-        console.log("check query params")
+        req.app.locals.log.trace(app.locals.appInsightsClient, "check query params", req.app.locals.ENVIRONMENT)
     }
 
 

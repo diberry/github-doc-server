@@ -5,7 +5,7 @@ const session = require('../lib/session.js')
 
 let router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
 
     const CONFIG = req.app.locals;
 
@@ -29,7 +29,7 @@ router.get('/', async (req, res) => {
           })
 
     } else {
-        console.log("/github/callback - code is empty ")
+        req.app.locals.log.trace(app.locals.appInsightsClient, "/github/callback - code is empty", req.app.locals.ENVIRONMENT)
         res.send('/github/callback - code is empty ')
     }
   })

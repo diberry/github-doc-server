@@ -3,17 +3,13 @@
 /**
  * Module dependencies.
  */
-
  const appInsights = require('applicationinsights');
-
-
-
-// telemetry
+ // telemetry
 const CONFIG = require('../src/config.js')
-if(CONFIG.AZURE.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY){
+
   appInsights.setup(CONFIG.AZURE.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY)
   .setAutoCollectRequests(true)
-  .setAutoCollectConsole(true,true)
+  .setAutoCollectConsole(true)
   .setAutoDependencyCorrelation(true)
   .setAutoCollectRequests(true)
   .setAutoCollectPerformance(true)
@@ -21,18 +17,26 @@ if(CONFIG.AZURE.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY){
   .setAutoCollectDependencies(true)
   .setUseDiskRetryCaching(true)
   .start();
+
+  const client = appInsights.defaultClient;
+
+  const log = require('../src/lib/log')
+
+
+if(!CONFIG.AZURE.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY){
+  throw Error("app insights key is empty")
+} else {
+  log.trace(client, "app insights key is found", CONFIG.AZURE.ENVIRONMENT)
 }
 
-
 var app = require('../src/app');
-var debug = require('debug')('api:server');
 var http = require('http');
 
 var routes = app.routes;
 for (var verb in routes){
     if (routes.hasOwnProperty(verb)) {
       routes[verb].forEach(function(route){
-        console.log(verb + " : "+route['path']);
+        client.trackTrace({message: verb + " : "+route['path']});
       });
     }
 }
@@ -94,14 +98,15 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+      log.error(client, bind + ' requires elevated privileges', CONFIG.AZURE.ENVIRONMENT)
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+      log.error(client, bind + ' is already in use', CONFIG.AZURE.ENVIRONMENT)
       process.exit(1);
       break;
     default:
+      log.error(client, error, CONFIG.AZURE.ENVIRONMENT)
       throw error;
   }
 }
@@ -115,5 +120,5 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  console.log('Listening on ' + bind);
+  log.event(client, 'Listening on ' + bind, CONFIG.AZURE.ENVIRONMENT)
 }
