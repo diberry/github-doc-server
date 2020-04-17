@@ -1,8 +1,8 @@
 const express = require('express');
 const path = require('path')
-const session = require('../lib/session.js')
-const repo = require('../lib/github/repo')
-const file = require('../lib/github/file')
+const lib = require('github-doc-server-lib');
+
+const session=require("../session");
 
 let router = express.Router();
 
@@ -12,19 +12,19 @@ router.get('/', async (req, res) => {
 })
 router.get('/repos', async (req, res) => {
 
-    const user = session.get(req,"user");
-    const token = user.gitHubToken;
+    const userSession = session.get(req,"user");
+    const token = userSession.gitHubToken;
     const role = req.query["role"] || "owner";
 
-    const userReposForRole = await repo.getRepoListByUserRole(token, user.login,role)
+    const userReposForRole = await lib.GitHub.Repo.getRepoListByUserRole(token, user.login,role)
 
     res.send(userReposForRole)
 
 })
 router.get('/readme', async (req, res) => {
 
-    const user = session.get(req,"user");
-    const token = user.gitHubToken;
+    const userSession = session.get(req,"user");
+    const token = userSession.gitHubToken;
 
     const repoInfo = {
         repo: req.query.repo,
@@ -32,7 +32,7 @@ router.get('/readme', async (req, res) => {
         path: "README.md"
     }
 
-    const readmeForRepo = await file.readme(token, user.login,repoInfo)
+    const readmeForRepo = await lib.GitHub.File.readme(token, user.login,repoInfo)
 
     if(readmeForRepo && readmeForRepo.content) {
         res.send(JSON.stringify(readmeForRepo.content))
@@ -55,7 +55,7 @@ router.get('/file', async (req, res) => {
         path: req.query.path  || req.form.path
     }
 
-    const results = await file.readFile(token, user.login, repoInfo )
+    const results = await lib.GitHub.File.readFile(token, user.login, repoInfo )
 
     res.send(JSON.stringify(results.content))
 
@@ -87,7 +87,7 @@ router.post('/note', async (req, res, next) => {
         committerEmail:form.committeremail.trim()
     }
 
-    const fileContents = await file.writeFile(token, repoInfo, fileInfo)
+    const fileContents = await lib.GitHub.File.writeFile(token, repoInfo, fileInfo)
 
     res.send(JSON.stringify(fileContents))
 

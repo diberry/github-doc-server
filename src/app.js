@@ -2,18 +2,19 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const cors = require('cors')
-const log = require('../src/lib/log')
+
+const lib = require('github-doc-server-lib')
+const session=require("./session")
 
 const appInsights = require("applicationinsights");
 
 // Config
-const GLOBALCONFIG = require('../src/config.js')
+const GLOBALCONFIG = require('./config.js')
 
-const session = require(`../src/lib/session.js`)
-const metaroute = require('./routes/preroute');
-const user = require('./routes/user')
-const authenticationRouter = require('./routes/authentication')
-const gitHubRouter = require('./routes/github');
+const Router = require('./routes/index');
+
+console.log(Router);
+
 
 // app config
 let app = express();
@@ -22,7 +23,7 @@ app.locals = GLOBALCONFIG;
 // remote logging
 const appInsightsClient = appInsights.defaultClient;
 app.locals.appInsightsClient = appInsightsClient;
-app.locals.log = log;
+app.locals.log = lib.Log;
 
 // cookies and sessions
 app.use(cookieParser());
@@ -36,7 +37,7 @@ app.use(cors({
 app.use(session.createSessionMiddleWare(GLOBALCONFIG.SESSION_SETTINGS))
 
 app.use(express.static(path.join(__dirname, './public')));
-app.use(metaroute.preroute)
+app.use(Router.Routes.Meta.preroute)
 
 // public routes
 app.get('/error',(req, res) =>{
@@ -51,11 +52,10 @@ app.get('/login', (req, res, next) => {
 
   res.redirect(`https://github.com/login/oauth/authorize?client_id=${CONFIG.GITHUB_CLIENT_ID}&scope=user%20repo`);
 })
-app.use('/callback', authenticationRouter.router)
+app.use('/callback', Router.Routes.Authentication)
+app.use('/user', Router.isAuthenticated, Router.Routes.User);
+app.use('/github', Router.isAuthenticated, Router.Routes.GitHub);
 
-// authenticated routes
-app.use('/github', authenticationRouter.isAuthenticated, gitHubRouter);
-app.use('/user', authenticationRouter.isAuthenticated, user);
 
-app.use(metaroute.errorHandling)
+app.use(Router.Routes.Meta.errorHandling)
 module.exports = app;

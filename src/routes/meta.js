@@ -1,4 +1,5 @@
 const path = require('path');
+
 const preroute = (req, res, next) => {
 
     if(req && req.app && req.app.locals && req.app.locals.appInsightsClient){
@@ -25,6 +26,8 @@ const errorHandling  =  ((err, req, res, next) => {
   })
 
   module.exports = {
-    preroute,
-    errorHandling
+    router: {
+      preroute,
+      errorHandling
+    }
   }

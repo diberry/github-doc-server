@@ -1,5 +1,5 @@
 const express = require('express');
-const session = require('../lib/session.js')
+const session=require("../session");
 
 let router = express.Router();
 
@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
 
     // don't return token to client
     delete userProfile.gitHubToken
-    
+
     res.send(userProfile)
 })
 

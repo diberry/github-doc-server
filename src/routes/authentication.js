@@ -1,9 +1,7 @@
 const express = require('express');
-const gitHubAuthentication = require('../lib/github/githubAuth.js')
-const userUtils = require('../lib/github/user.js')
-const session = require('../lib/session.js')
-
+const lib = require('github-doc-server-lib');
 let router = express.Router();
+const session = require('../session')
 
 router.get('/', async (req, res, next) => {
 
@@ -12,20 +10,20 @@ router.get('/', async (req, res, next) => {
     if (req && req.query && req.query.code) {
         const code = req.query.code
 
-        const responseAccessToken = await gitHubAuthentication.getAuthenticatedToken(CONFIG.GITHUB_CLIENT_ID, CONFIG.GITHUB_CLIENT_SECRET, code);
+        const responseAccessToken = await lib.GitHub.Authentication.getAuthenticatedToken(CONFIG.GITHUB_CLIENT_ID, CONFIG.GITHUB_CLIENT_SECRET, code);
 
         const gitHubToken = responseAccessToken.data.access_token;
 
-        const userProfile = await userUtils.getProfile(gitHubToken)
-        const user = { ...userProfile, gitHubToken}
-        session.set(req, "user", user);
+        const userProfile = await lib.GitHub.User.getProfile(gitHubToken)
+        const userObject = { ...userProfile, gitHubToken}
+        session.set(req, "user", userObject);
 
         req.session.save(function(err) {
             if(err) {
               res.end('session save error: ' + err)
               return
             }
-            res.send(JSON.stringify(user));
+            res.send(JSON.stringify(userObject));
           })
 
     } else {
@@ -38,7 +36,6 @@ router.get('/', async (req, res, next) => {
 
   const isAuthenticated = (req, res, next) => {
 
-    const user = session.get(req, "user")
     if (req &&
         req.session &&
         req.session.user &&

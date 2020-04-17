@@ -5,7 +5,7 @@
  */
  const appInsights = require('applicationinsights');
  // telemetry
-const CONFIG = require('../src/config.js')
+const CONFIG = require('./config.js')
 
   appInsights.setup(CONFIG.AZURE.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY)
   .setAutoCollectRequests(true)
@@ -19,9 +19,8 @@ const CONFIG = require('../src/config.js')
   .start();
 
   const client = appInsights.defaultClient;
-
-  const log = require('../src/lib/log')
-
+  const lib = require('github-doc-server-lib')
+  const log = lib.Log
 
 if(!CONFIG.AZURE.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY){
   throw Error("app insights key is empty")
@@ -29,7 +28,7 @@ if(!CONFIG.AZURE.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY){
   log.trace(client, "app insights key is found", CONFIG.AZURE.ENVIRONMENT)
 }
 
-var app = require('../src/app');
+var app = require('./app');
 var http = require('http');
 
 var routes = app.routes;

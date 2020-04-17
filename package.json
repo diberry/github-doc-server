@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "test:all": "jest --config ./jest.config.js"
+    "start": "node ./src/server.js",
+    "test:all": "jest --config ./jest.config.js",
+    "test-index": "node index.js"
   },
   "dependencies": {
     "@octokit/graphql": "^4.3.1",
@@ -17,6 +18,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.16.4",
     "express-session": "^1.17.0",
+    "fs-extra": "^9.0.0",
+    "github-doc-server-lib": "git://github.com/diberry/github-doc-server-lib.git",
     "jest": "^25.3.0",
     "js-base64": "^2.5.2",
     "path": "^0.12.7",
