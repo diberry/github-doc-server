@@ -62,8 +62,9 @@ router.get('/file', async (req, res) => {
 })
 router.get('/note', function (req, res) {
 
-    const filePath =path.join(__dirname,'../public/note.html');
-    res.sendFile(filePath)
+    //const filePath =path.join(__dirname,'../public/note.html');
+    //res.sendFile(filePath)
+    res.redirect(`https://localhost:3000/note`);
 
 });
 

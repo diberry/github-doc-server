@@ -40,21 +40,21 @@ app.use(express.static(path.join(__dirname, './public')));
 app.use(Router.Routes.Meta.preroute)
 
 // public routes
-app.get('/error',(req, res) =>{
+app.get('/api/error',(req, res) =>{
   req.app.locals.log.trace(req.app.locals.appInsightsClient, "app insights key is found", req.app.locals.ENVIRONMENT)
   throw new Error('false error');
 })
-app.get('/status', (req, res) => {
+app.get('/api/status', (req, res) => {
   res.send(JSON.stringify(req.session));
 });
-app.get('/login', (req, res, next) => {
+app.get('/api/login', (req, res, next) => {
   const CONFIG = req.app.locals;
 
   res.redirect(`https://github.com/login/oauth/authorize?client_id=${CONFIG.GITHUB_CLIENT_ID}&scope=user%20repo`);
 })
-app.use('/callback', Router.Routes.Authentication)
-app.use('/user', Router.isAuthenticated, Router.Routes.User);
-app.use('/github', Router.isAuthenticated, Router.Routes.GitHub);
+app.use('/api/callback', Router.Routes.Authentication)
+app.use('/api/user', Router.isAuthenticated, Router.Routes.User);
+app.use('/api/github', Router.isAuthenticated, Router.Routes.GitHub);
 
 
 app.use(Router.Routes.Meta.errorHandling)
