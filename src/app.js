@@ -9,7 +9,7 @@ const session=require("./session")
 const appInsights = require("applicationinsights");
 
 // Config
-const GLOBALCONFIG = require('./config.js')
+const GLOBALCONFIG = require('./config.js').SERVER_CONFIG;
 
 const Router = require('./routes/index');
 
@@ -52,6 +52,9 @@ app.get('/api/login', (req, res, next) => {
 
   res.redirect(`https://github.com/login/oauth/authorize?client_id=${CONFIG.GITHUB_CLIENT_ID}&scope=user%20repo`);
 })
+app.use('/api/client/config', Router.Routes.ClientConfig)
+
+
 app.use('/api/callback', Router.Routes.Authentication)
 app.use('/api/user', Router.isAuthenticated, Router.Routes.User);
 app.use('/api/github', Router.isAuthenticated, Router.Routes.GitHub);

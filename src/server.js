@@ -5,7 +5,7 @@
  */
  const appInsights = require('applicationinsights');
  // telemetry
-const CONFIG = require('./config.js')
+const CONFIG = require('./config.js').SERVER_CONFIG;
 
   appInsights.setup(CONFIG.AZURE.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY)
   .setAutoCollectRequests(true)
