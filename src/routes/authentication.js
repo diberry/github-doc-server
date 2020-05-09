@@ -24,7 +24,7 @@ router.get('/', async (req, res, next) => {
               return
             }
             //res.send(JSON.stringify(userObject));
-            res.redirect(`http://localhost:3000/callback`);
+            res.redirect(`http://localhost:3000/callback?userName=${userProfile.name}`);
           })
 
     } else {
