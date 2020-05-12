@@ -7,6 +7,7 @@ const lib = require('github-doc-server-lib')
 const session=require("./session")
 
 const appInsights = require("applicationinsights");
+const authentication = require('./routes/authentication')
 
 // Config
 const GLOBALCONFIG = require('./config.js').SERVER_CONFIG;
@@ -47,11 +48,8 @@ app.get('/api/error',(req, res) =>{
 app.get('/api/status', (req, res) => {
   res.send(JSON.stringify(req.session));
 });
-app.get('/api/login', (req, res, next) => {
-  const CONFIG = req.app.locals;
-
-  res.redirect(`https://github.com/login/oauth/authorize?client_id=${CONFIG.GITHUB_CLIENT_ID}&scope=user%20repo`);
-})
+app.get('/api/login',authentication.login)
+app.get('/api/logout',authentication.logout)
 app.use('/api/client/config', Router.Routes.ClientConfig)
 
 

@@ -1,0 +1,13 @@
+# Change log
+
+## 0.1.5 - 2020/05/12
+
+* Logout api returns success - doesn't redirect
+
+## 0.1.4 - storage/state on FE
+
+* send user name back to have superficial indication of authentication
+
+## 0.0.1 - 2020/04/28
+
+* API returns client config
