@@ -25,6 +25,9 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
+            "runtimeArgs": [
+                "--preserve-symlinks"
+            ],
             "program": "${workspaceFolder}\\src\\server.js"
         }
     ]
