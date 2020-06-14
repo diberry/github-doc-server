@@ -3,11 +3,11 @@
 /**
  * Module dependencies.
  */
- const appInsights = require('applicationinsights');
- // telemetry
+const appInsights = require('applicationinsights');
+// telemetry
 const CONFIG = require('./config.js').SERVER_CONFIG;
 
-  appInsights.setup(CONFIG.AZURE.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY)
+appInsights.setup(CONFIG.AZURE.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY)
   .setAutoCollectRequests(true)
   .setAutoCollectConsole(true)
   .setAutoDependencyCorrelation(true)
@@ -18,11 +18,11 @@ const CONFIG = require('./config.js').SERVER_CONFIG;
   .setUseDiskRetryCaching(true)
   .start();
 
-  const client = appInsights.defaultClient;
-  const lib = require('github-doc-server-lib')
-  const log = lib.Log
+const client = appInsights.defaultClient;
+const lib = require('github-doc-server-lib')
+const log = lib.Log
 
-if(!CONFIG.AZURE.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY){
+if (!CONFIG.AZURE.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY) {
   throw Error("app insights key is empty")
 } else {
   log.trace(client, "app insights key is found", CONFIG.AZURE.ENVIRONMENT)
@@ -32,12 +32,12 @@ var app = require('./app');
 var http = require('http');
 
 var routes = app.routes;
-for (var verb in routes){
-    if (routes.hasOwnProperty(verb)) {
-      routes[verb].forEach(function(route){
-        client.trackTrace({message: verb + " : "+route['path']});
-      });
-    }
+for (var verb in routes) {
+  if (routes.hasOwnProperty(verb)) {
+    routes[verb].forEach(function (route) {
+      client.trackTrace({ message: verb + " : " + route['path'] });
+    });
+  }
 }
 
 /**
@@ -51,7 +51,7 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -86,6 +86,9 @@ function normalizePort(val) {
  */
 
 function onError(error) {
+
+  console.log("server.js::onError")
+
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -121,3 +124,9 @@ function onListening() {
     : 'port ' + addr.port;
   log.event(client, 'Listening on ' + bind, CONFIG.AZURE.ENVIRONMENT)
 }
+
+process.on('uncaughtException', function(e){
+  console.log(e);
+});
+
+module.export = server

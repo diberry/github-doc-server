@@ -1,0 +1,2 @@
+request /api/github/note with body
+"{"owner":"diberry","repo":"public-test","path":"README-1590928344619.md","filecontent":"hello","commitMessage":"my commit message","committerEmail":"diberry@microsoft.com","committerName":"Dina Berry"}"

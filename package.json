@@ -1,10 +1,10 @@
 {
   "name": "api",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "private": true,
   "scripts": {
     "start": "node ./src/server.js",
-    "test:all": "jest --config ./jest.config.js",
+    "test": "jest --config ./jest.config.js --coverage",
     "test-index": "node index.js"
   },
   "dependencies": {
@@ -19,10 +19,11 @@
     "express": "^4.16.4",
     "express-session": "^1.17.0",
     "fs-extra": "^9.0.0",
-    "github-doc-server-lib": "git://github.com/diberry/github-doc-server-lib.git",
+    "github-doc-server-lib": "^1.0.0",
     "jest": "^25.3.0",
     "js-base64": "^2.5.2",
     "path": "^0.12.7",
-    "session-file-store": "^1.4.0"
+    "session-file-store": "^1.4.0",
+    "supertest": "^4.0.2"
   }
 }

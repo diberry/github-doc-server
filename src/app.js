@@ -57,6 +57,60 @@ app.use('/api/callback', Router.Routes.Authentication)
 app.use('/api/user', Router.isAuthenticated, Router.Routes.User);
 app.use('/api/github', Router.isAuthenticated, Router.Routes.GitHub);
 
+app.get('/error/sync', (req, res, next) =>{
+  console.log(`variable is undefined ${notdefined}`)
+  next()
+})
 
-app.use(Router.Routes.Meta.errorHandling)
+const catchAsync = fn => {
+  return (req, res, next) => {
+    fn(req, res, next).catch(next);
+  };
+};
+
+app.get('/error/async', catchAsync(async(req, res, next) =>{
+  await Promise.reject('async error')
+}))
+
+
+function logErrors (err, req, res, next) {
+  console.error(err.stack)
+  next(err)
+}
+app.use(logErrors);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    let err = new Error('Not Found');
+    err.status = 404;
+    res.status(404).send(err);
+});
+
+
+// catch all error handlers
+app.use((err, req, res, next) => {
+
+  //let errorStack = (app.get('env') === 'development') ? err : {};
+  const errorStack = {
+    url: req.url,
+    api: req.path,
+    method: req.method,
+    error: {
+      msg: err.message,
+      stack: err.stack
+  }};
+  res.status(500).json(errorStack);
+
+  next(err);
+});
+
+app.use(function (err, req, res, next) {
+  console.error(err.stack)
+  res.status(500).send('Something broke! ' + JSON.stringify(err))
+});
+
+process.on('uncaughtException', function (err) {
+  console.log('-------------------------- Caught exception: ' + err);
+});
+
 module.exports = app;

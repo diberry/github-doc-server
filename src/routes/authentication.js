@@ -3,6 +3,9 @@ const lib = require('github-doc-server-lib');
 let router = express.Router();
 const session = require('../session')
 
+/*
+Req.query.code = returned from GitHub
+*/
 router.get('/', async (req, res, next) => {
 
   const CONFIG = req.app.locals;
@@ -12,10 +15,20 @@ router.get('/', async (req, res, next) => {
 
     const responseAccessToken = await lib.GitHub.Authentication.getAuthenticatedToken(CONFIG.GITHUB_CLIENT_ID, CONFIG.GITHUB_CLIENT_SECRET, code);
 
-    const gitHubToken = responseAccessToken.data.access_token;
+    if(!responseAccessToken) throw Error("Can\'t get GitHub Auth token")
 
-    const userProfile = await lib.GitHub.User.getProfile(gitHubToken)
-    const userObject = { ...userProfile, gitHubToken }
+    const gitHubToken = responseAccessToken.token ? responseAccessToken.token : responseAccessToken.data.access_token;
+
+    if(!gitHubToken) throw Error("Can\'t determine GitHub Auth token return value")
+
+    const userPrivateProfile = await lib.GitHub.User.getPrivateProfile(gitHubToken)
+
+
+    if(!userPrivateProfile || !userPrivateProfile.data || !userPrivateProfile.data.login) throw Error("Can\'t get GitHub private profile login")
+
+    const userPublicProfile = await lib.GitHub.User.getProfile(gitHubToken, userPrivateProfile.data.login)
+
+    const userObject = { ...userPublicProfile.data, gitHubToken }
     session.set(req, "user", userObject);
 
     req.session.save(function (err) {
@@ -26,7 +39,7 @@ router.get('/', async (req, res, next) => {
 
       const redirectAfterAuthentication = CONFIG.URL.REDIRECT_CLIENT_AFTER_AUTHENTICATION;
       //res.redirect(`http://localhost:3000/callback?userName=${userProfile.name}`);
-      res.redirect(`${redirectAfterAuthentication}${userProfile.name}`)
+      res.redirect(`${redirectAfterAuthentication}${userPublicProfile.data.name}`)
     })
 
   } else {
@@ -34,7 +47,9 @@ router.get('/', async (req, res, next) => {
     res.send('/github/callback - code is empty ')
   }
 })
-
+/*
+Oauth Scope = user repo
+*/
 const login = (req, res, next) => {
 
   const CONFIG = req.app.locals;

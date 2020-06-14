@@ -14,6 +14,7 @@ const preroute = (req, res, next) => {
 
 const errorHandling  =  ((err, req, res, next) => {
 
+  console.log( `meta.js::errorHandling - ${err}`)
   req.app.locals.log.error(req.app.locals.appInsightsClient, `postroute error - ${err}`, req.app.locals.ENVIRONMENT)
 
     if (res.headersSent) {

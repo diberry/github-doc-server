@@ -1,5 +1,25 @@
 # Change log
 
+## 0.1.7 - Timeout and test setup
+
+* berry.dina_at_gmail = test account and test token
+* test repo names
+    * dfberry1/test-public
+    * dfberry1/test-private
+* adopt 1.0.0 lib with new timeout param
+* async & sync runtime error
+    * catchAsync - TBD - add to all async apis
+* https://www.toptal.com/nodejs/node-js-error-handling
+* add jest coverage and supertest
+* add param checking - TBD - not enough/not great method
+* light method commenting - TBD not enought
+
+## 0.1.6 - Global error handler
+
+* Invalid route
+* Invalid param to route
+* Error in function
+
 ## 0.1.5 - 2020/05/12
 
 * Logout api returns success - doesn't redirect
